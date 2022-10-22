@@ -1,4 +1,5 @@
 import pymysql
+from os import getenv
 
 
 class ColumbiaStudentResource:
@@ -9,9 +10,9 @@ class ColumbiaStudentResource:
     @staticmethod
     def _get_connection():
         conn = pymysql.connect(
-            user="admin",
-            password="llqOFFER2020!",
-            host="ll3466-coms6156.cbmcnoqggtt1.us-east-2.rds.amazonaws.com",
+            user=getenv("USER"),
+            password=getenv("PWD"),
+            host=getenv("HOST"),
             cursorclass=pymysql.cursors.DictCursor,
             autocommit=True
         )

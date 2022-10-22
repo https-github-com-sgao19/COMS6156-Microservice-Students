@@ -1,4 +1,3 @@
-import flask
 from flask import Flask, Response, request, make_response
 from datetime import datetime
 import json
@@ -24,11 +23,13 @@ def test_flask():
 
     return rsp
 
+
 @app.put("/api/students/<uni>")
 def post_student(uni):
     params = request.args
     ColumbiaStudentResource.update_by_key(uni, params)
     return get_student_by_uni(uni)
+
 
 @app.post("/api/students")
 def put_student():
@@ -39,10 +40,12 @@ def put_student():
         return Response("Insert Failure", status=404, content_type="text/plain")
     return get_student_by_uni(params["guid"])
 
+
 @app.delete("/api/students/<uni>")
 def delete_student(uni):
     ColumbiaStudentResource.delete_by_key(uni)
     return ColumbiaStudentResource.get_by_key(uni)
+
 
 @app.get("/api/health")
 def get_health():
@@ -70,6 +73,7 @@ def get_student_by_uni(uni):
         rsp = Response("NOT FOUND", status=404, content_type="text/plain")
 
     return rsp
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5011)
