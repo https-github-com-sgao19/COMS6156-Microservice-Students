@@ -20,7 +20,7 @@ class ColumbiaStudentResource:
 
     @staticmethod
     def get_by_key(key):
-        sql = "SELECT * FROM f22_databases.columbia_students where guid=%s";
+        sql = "SELECT * FROM f22_databases.columbia_students where guid=%s"
         conn = ColumbiaStudentResource._get_connection()
         cur = conn.cursor()
         cur.execute(sql, args=key)
@@ -43,8 +43,6 @@ class ColumbiaStudentResource:
             content.append("email = \"" + student["email"] + "\"")
         if "school_code" in student:
             content.append("school_code = \"" + student["school_code"] + "\"")
-        #sql = "UPDATE f22_databases.columbia_students SET " + ", ".join(content) + " WHERE guid = \"" + uni + "\""
-        #print(sql)
         sql = "UPDATE f22_databases.columbia_students SET " + ", ".join(content) + " WHERE guid = %s"
         res = cur.execute(sql, args=uni)
         result = cur.fetchone()
@@ -66,9 +64,7 @@ class ColumbiaStudentResource:
         sql = "INSERT INTO f22_databases.columbia_students (guid, last_name, first_name, middle_name, email, " \
               "school_code) VALUES (%s, %s, %s, %s, %s, %s)"
         cur.execute(sql, args=(guid, first_name, last_name, middle_name, email, school_code))
-        result = cur.fetchone()
-
-        return result
+        return
 
     @staticmethod
     def delete_by_key(uni):
