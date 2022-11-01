@@ -12,6 +12,8 @@ CORS(app)
 
 @app.route("/test", methods=["GET", "POST"])
 def test_flask():
+    params = request.args
+    body = request.json
     if request.method == "POST":
         msg = {1: "test POST"}
         rsp = Response(json.dumps(msg), status=404, content_type="application/json")
@@ -24,47 +26,35 @@ def test_flask():
     return rsp
 
 
-@app.put("/api/students/<uni>")
-def post_student(uni):
+@app.put("/students/<uni>")
+def put_student(uni):
     params = request.args
     ColumbiaStudentResource.update_by_key(uni, params)
     return get_student_by_uni(uni)
 
 
-@app.post("/api/students")
-def put_student():
-    params = request.args
+@app.post("/students")
+def post_student():
+    body = request.json
     try:
-        ColumbiaStudentResource.insert_by_key(params)
+        ColumbiaStudentResource.insert_by_key(body)
     except:
         return Response("Insert Failure", status=404, content_type="text/plain")
-    return get_student_by_uni(params["guid"])
+    return get_student_by_uni(body["uni"])
 
 
-@app.delete("/api/students/<uni>")
+@app.delete("/students/<uni>")
 def delete_student(uni):
-    ColumbiaStudentResource.delete_by_key(uni)
-    return ColumbiaStudentResource.get_by_key(uni)
+    try:
+        ColumbiaStudentResource.delete_by_key(uni)
+        response = make_response("Delete Success!", 200)
+    except:
+        response = make_response("Delete Fail!", 400)
+    return response
 
 
-@app.get("/api/health")
-def get_health():
-    t = str(datetime.now())
-    msg = {
-        "name": "F22-Starter-Microservice",
-        "health": "Good",
-        "at time": t
-    }
-
-    # DFF TODO Explain status codes, content type, ... ...
-    result = Response(json.dumps(msg), status=200, content_type="application/json")
-
-    return result
-
-
-@app.route("/api/students/<uni>", methods=["GET"])
+@app.route("/students/<uni>", methods=["GET"])
 def get_student_by_uni(uni):
-
     result = ColumbiaStudentResource.get_by_key(uni)
 
     if result:
