@@ -55,7 +55,18 @@ def delete_student(uni):
 
 @app.get("/students")
 def get_students_by_template():
-    pass
+    params = request.args
+    students_per_page = int(params["limit"]) if "limit" in params else 10
+    # print(params["page"])
+    offSet = students_per_page * (int(params["page"]) - 1) if "page" in params else 0
+    print(params, offSet)
+    result = ColumbiaStudentResource.get_by_template(10, offSet)
+    if result:
+        rsp = Response(json.dumps(result), status=200, content_type="application.json")
+    else:
+        rsp = Response("NOT FOUND", status=404, content_type="text/plain")
+
+    return rsp
 
 
 @app.route("/students/<uni>", methods=["GET"])
@@ -71,4 +82,4 @@ def get_student_by_uni(uni):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5011)
+    app.run(host="0.0.0.0", port=5012)
