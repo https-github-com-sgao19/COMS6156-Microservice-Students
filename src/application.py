@@ -53,6 +53,11 @@ def delete_student(uni):
     return response
 
 
+@app.get("/students")
+def get_students_by_template():
+    pass
+
+
 @app.route("/students/<uni>", methods=["GET"])
 def get_student_by_uni(uni):
     result = ColumbiaStudentResource.get_by_key(uni)
