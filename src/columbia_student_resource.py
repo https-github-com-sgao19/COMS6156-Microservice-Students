@@ -20,16 +20,10 @@ class ColumbiaStudentResource:
 
     @staticmethod
     def get_by_template(limit=10, offset=0):
-        # try:
-        #     limit, offset = int(limit), int(offset)
-        # except:
-        #     raise ValueError("Invalid Params")
         sql = "SELECT * FROM f22_databases.columbia_students LIMIT %s OFFSET %s"
-        print("SELECT * FROM f22_databases.columbia_students LIMIT %s OFFSET %s"%(limit, offset))
         conn = ColumbiaStudentResource._get_connection()
         cur = conn.cursor()
         cur.execute(sql, args=(limit, offset))
-        # cur.execute("SELECT * FROM f22_databases.columbia_students LIMIT %s OFFSET %s"%(limit, offset))
         return cur.fetchall()
 
     @staticmethod
