@@ -12,11 +12,15 @@ CORS(app)
 
 @app.route("/test", methods=["GET", "POST"])
 def test_flask():
-    params = request.args
-    body = request.json
+    # params = request.args
+    # body = request.json
+    print("test")
     if request.method == "POST":
         msg = {1: "test POST"}
-        rsp = Response(json.dumps(msg), status=404, content_type="application/json")
+        print(request.data)
+        print(request.get_json(force=True))
+        print(request.form)
+        rsp = Response(json.dumps(msg), status=200, content_type="application/json")
     else:
         msg = {2: "test GET"}
         rsp = make_response(msg)
@@ -28,8 +32,8 @@ def test_flask():
 
 @app.put("/students/<uni>")
 def put_student(uni):
-    params = request.args
-    ColumbiaStudentResource.update_by_key(uni, params)
+    body = request.json
+    ColumbiaStudentResource.update_by_key(uni, body)
     return get_student_by_uni(uni)
 
 
