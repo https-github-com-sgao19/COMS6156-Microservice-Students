@@ -1,16 +1,17 @@
 from flask import Flask, Response, request, make_response
-from datetime import datetime
 import json
 from columbia_student_resource import ColumbiaStudentResource
 from flask_cors import CORS
 
 # Create the Flask application object.
-app = Flask(__name__)
+application = Flask(__name__)
 
-CORS(app)
+CORS(application)
+
+student = ColumbiaStudentResource()
 
 
-@app.route("/test", methods=["GET", "POST"])
+@application.route("/test", methods=["GET", "POST"])
 def test_flask():
     # params = request.args
     # body = request.json
@@ -30,40 +31,40 @@ def test_flask():
     return rsp
 
 
-@app.put("/students/<uni>")
+@application.put("/students/<uni>")
 def put_student(uni):
     body = request.json
-    ColumbiaStudentResource.update_by_key(uni, body)
+    student.update_by_key(uni, body)
     return get_student_by_uni(uni)
 
 
-@app.post("/students")
+@application.post("/students")
 def post_student():
     body = request.json
     try:
-        ColumbiaStudentResource.insert_by_key(body)
+        student.insert_by_key(body)
     except:
         return Response("Insert Failure", status=404, content_type="text/plain")
     return get_student_by_uni(body["uni"])
 
 
-@app.delete("/students/<uni>")
+@application.delete("/students/<uni>")
 def delete_student(uni):
     try:
-        ColumbiaStudentResource.delete_by_key(uni)
+        student.delete_by_key(uni)
         response = make_response("Delete Success!", 200)
     except:
         response = make_response("Delete Fail!", 400)
     return response
 
 
-@app.get("/students")
+@application.get("/students")
 def get_students_by_template():
     params = request.args
     students_per_page = int(params["limit"]) if "limit" in params else 10
     offset = students_per_page * (int(params["page"]) - 1) if "page" in params else 0
 
-    result = ColumbiaStudentResource.get_by_template(10, offset)
+    result = student.get_by_template(10, offset)
     if result:
         rsp = Response(json.dumps(result), status=200, content_type="application.json")
     else:
@@ -72,9 +73,9 @@ def get_students_by_template():
     return rsp
 
 
-@app.route("/students/<uni>", methods=["GET"])
+@application.route("/students/<uni>", methods=["GET"])
 def get_student_by_uni(uni):
-    result = ColumbiaStudentResource.get_by_key(uni)
+    result = student.get_by_key(uni)
 
     if result:
         rsp = Response(json.dumps(result), status=200, content_type="application.json")
@@ -85,4 +86,4 @@ def get_student_by_uni(uni):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5011)
+    application.run(host="0.0.0.0", port=5011)
